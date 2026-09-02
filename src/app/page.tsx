@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SearchBox } from "@/components/search/SearchBox";
+import { Hero } from "@/components/home/Hero";
 import { CategoryCard } from "@/components/cards/CategoryCard";
 import { CalculatorCard } from "@/components/cards/CalculatorCard";
 import { AdSlot } from "@/components/ads/AdSlot";
@@ -61,24 +61,9 @@ const faqs = [
 export default function HomePage() {
   return (
     <div className="flex flex-col">
-      <section className="border-b border-border bg-surface">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Smart calculators for everyday decisions
-            </h1>
-            <p className="mt-3 text-base leading-relaxed text-muted sm:text-lg">
-              Fast, accurate, and free tools for money, math, home, education, and daily life —
-              built for the US.
-            </p>
-          </div>
-          <div className="mx-auto mt-6 max-w-xl">
-            <SearchBox size="lg" placeholder="Search 30+ calculators…" />
-          </div>
-        </div>
-      </section>
+      <Hero />
 
-      <section aria-labelledby="popular-heading" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <section aria-labelledby="popular-heading" className="mx-auto max-w-7xl px-4 pb-12 pt-20 sm:px-6 sm:pt-24 lg:px-8">
         <div className="flex items-baseline justify-between">
           <h2 id="popular-heading" className="text-xl font-semibold text-foreground">
             Popular calculators
