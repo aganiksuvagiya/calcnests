@@ -1,20 +1,22 @@
 import type { Metadata } from "next";
-import type { CalculatorMeta, FaqItem } from "@/types/calculator";
+import type { FaqItem } from "@/types/calculator";
 
 export const SITE_NAME = "CalcNests";
-export const SITE_TAGLINE = "Smart Calculators & Everyday Tools";
+export const SITE_TAGLINE = "All Your Calculations, In One Place";
 export const SITE_URL = "https://calcnests.com";
 export const SITE_DESCRIPTION =
-  "Fast, accurate, free calculators for money, math, home, education, and everyday decisions — built for the US.";
+  "All your calculations, in one place — fast, accurate, free calculators for money, math, home, education, and everyday decisions, built for the US.";
 
 interface BuildMetadataArgs {
   title: string;
   description: string;
   path: string;
   keywords?: string[];
+  /** Set true for pages that exist but shouldn't appear in search results yet (e.g. a category with no live calculators). */
+  noindex?: boolean;
 }
 
-export function buildMetadata({ title, description, path, keywords }: BuildMetadataArgs): Metadata {
+export function buildMetadata({ title, description, path, keywords, noindex }: BuildMetadataArgs): Metadata {
   const url = `${SITE_URL}${path}`;
   return {
     title,
@@ -23,6 +25,9 @@ export function buildMetadata({ title, description, path, keywords }: BuildMetad
     alternates: {
       canonical: url,
     },
+    ...(noindex && {
+      robots: { index: false, follow: true },
+    }),
     openGraph: {
       title,
       description,
@@ -67,7 +72,7 @@ export function faqJsonLd(faqs: FaqItem[]) {
   };
 }
 
-export function calculatorJsonLd(calculator: CalculatorMeta) {
+export function calculatorJsonLd(calculator: { title: string; slug: string; description: string }) {
   return {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -91,5 +96,27 @@ export function organizationJsonLd() {
     name: SITE_NAME,
     url: SITE_URL,
     description: SITE_DESCRIPTION,
+  };
+}
+
+export function websiteJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_NAME,
+    url: SITE_URL,
+  };
+}
+
+export function itemListJsonLd(items: { name: string; path: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      url: `${SITE_URL}${item.path}`,
+    })),
   };
 }

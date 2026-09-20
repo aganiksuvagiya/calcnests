@@ -1,63 +1,77 @@
 import Link from "next/link";
 import { SearchBox } from "@/components/search/SearchBox";
-import { CategoryIcon } from "@/components/icons/CategoryIcon";
-import { categories } from "@/lib/categories";
-import { getCalculatorsByCategory, calculatorRegistry } from "@/lib/calculators/registry";
+import { Icon } from "@/components/icons/Icon";
+import { calculatorRegistry, getCalculator } from "@/lib/calculators/registry";
+import { SITE_TAGLINE } from "@/lib/seo";
+
+const popularSearchSlugs = ["percentage", "tip", "mortgage", "bmi", "gpa", "age"];
+
+const trustPoints = [
+  { icon: "check-circle", label: "100% free" },
+  { icon: "zap", label: "Instant results" },
+  { icon: "flag", label: "No sign-up required" },
+];
 
 export function Hero() {
   const total = calculatorRegistry.length;
+  const popularSearches = popularSearchSlugs
+    .map((slug) => getCalculator(slug))
+    .filter((c): c is NonNullable<typeof c> => Boolean(c));
 
   return (
     <section className="relative overflow-hidden border-b border-border bg-surface">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_20%_-10%,var(--accent-soft),transparent)]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-full bg-[radial-gradient(ellipse_70%_50%_at_50%_-10%,var(--accent-soft),transparent)]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-24 top-10 hidden h-72 w-72 rounded-full bg-emerald-200/30 blur-3xl sm:block"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-24 top-24 hidden h-72 w-72 rounded-full bg-sky-200/30 blur-3xl sm:block"
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 pt-12 sm:px-6 sm:pt-16 lg:px-8">
-        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
-          <div>
-            <p className="text-sm font-medium text-muted">Your life in</p>
-            <h1 className="mt-1 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-              <span className="text-accent">{total}</span> free calculators
-            </h1>
-            <p className="mt-3 max-w-md text-base leading-relaxed text-muted">
-              Fast, accurate, and free tools for money, math, home, education, and daily life —
-              built for the US.
-            </p>
-          </div>
-          <div>
-            <SearchBox size="lg" placeholder={`Search ${total}+ calculators…`} />
-          </div>
+      <div className="relative mx-auto max-w-3xl px-4 py-14 text-center sm:px-6 sm:py-20 lg:px-8">
+        <p className="text-sm font-semibold uppercase tracking-wide text-accent">{SITE_TAGLINE}</p>
+        <span className="focus-ring mt-3 inline-flex items-center gap-1.5 rounded-full border border-accent/20 bg-accent-soft px-3 py-1 text-xs font-semibold text-accent">
+          <Icon icon="calculator" className="h-3.5 w-3.5" />
+          {total}+ free calculators, built for the US
+        </span>
+
+        <h1 className="mt-5 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+          Smart calculators for money, math, and everyday life
+        </h1>
+        <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
+          Search {total} free, accurate calculators for money, home, education, and daily
+          decisions — no sign-up required.
+        </p>
+
+        <div className="mx-auto mt-8 max-w-xl">
+          <SearchBox size="lg" placeholder={`Search ${total}+ calculators…`} />
         </div>
 
-        <div className="relative z-10 -mb-10 mt-10 translate-y-10 rounded-2xl border border-border bg-surface p-4 shadow-lg sm:p-6">
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {categories.map((category) => {
-              const count = getCalculatorsByCategory(category.slug).length;
-              return (
-                <Link
-                  key={category.slug}
-                  href={`/calculators/${category.slug}`}
-                  className="focus-ring group flex flex-col items-center gap-2 rounded-xl border border-border bg-surface px-4 py-5 text-center transition-colors hover:border-accent/30 hover:bg-accent-soft"
-                >
-                  <CategoryIcon
-                    icon={category.icon}
-                    className="h-6 w-6 text-accent"
-                  />
-                  <span className="text-sm font-semibold text-foreground">{category.title}</span>
-                  <span className="text-xs text-muted">{count} calculators</span>
-                </Link>
-              );
-            })}
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-2 text-sm">
+          <span className="text-muted">Popular:</span>
+          {popularSearches.map((calc) => (
             <Link
-              href="/calculators"
-              className="focus-ring flex flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-accent/40 bg-accent-soft px-4 py-5 text-center transition-colors hover:border-accent"
+              key={calc.slug}
+              href={`/calculators/${calc.slug}`}
+              className="focus-ring rounded-full border border-border bg-surface px-3 py-1 text-foreground/80 transition-colors hover:border-accent/30 hover:text-accent"
             >
-              <span className="text-sm font-semibold text-accent">Browse all</span>
-              <span className="text-xs text-accent/80">{total} calculators →</span>
+              {calc.shortTitle ?? calc.title}
             </Link>
-          </div>
+          ))}
+        </div>
+
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 border-t border-border pt-6 text-sm text-muted">
+          {trustPoints.map((point) => (
+            <span key={point.label} className="flex items-center gap-1.5">
+              <Icon icon={point.icon} className="h-4 w-4 text-accent" />
+              {point.label}
+            </span>
+          ))}
         </div>
       </div>
     </section>

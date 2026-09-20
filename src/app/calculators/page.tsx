@@ -1,9 +1,11 @@
 import { Breadcrumbs } from "@/components/calculator/Breadcrumbs";
 import { CategoryCard } from "@/components/cards/CategoryCard";
 import { CalculatorCard } from "@/components/cards/CalculatorCard";
+import { AdSlot } from "@/components/ads/AdSlot";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { categories } from "@/lib/categories";
-import { getCalculatorsByCategory } from "@/lib/calculators/registry";
-import { buildMetadata } from "@/lib/seo";
+import { getCalculatorsByCategory, getLiveCalculators } from "@/lib/calculators/registry";
+import { buildMetadata, itemListJsonLd } from "@/lib/seo";
 
 export const metadata = buildMetadata({
   title: "All Calculators",
@@ -15,6 +17,9 @@ export const metadata = buildMetadata({
 export default function AllCalculatorsPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <JsonLd
+        data={itemListJsonLd(getLiveCalculators().map((c) => ({ name: c.title, path: `/calculators/${c.slug}` })))}
+      />
       <Breadcrumbs items={[{ name: "Calculators", path: "/calculators" }]} />
 
       <header className="mt-4">
@@ -26,6 +31,8 @@ export default function AllCalculatorsPage() {
           straight to a calculator.
         </p>
       </header>
+
+      <AdSlot variant="header" className="mt-6" />
 
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {categories.map((category) => (
@@ -50,6 +57,8 @@ export default function AllCalculatorsPage() {
           );
         })}
       </div>
+
+      <AdSlot variant="bottom" className="mt-14" />
     </div>
   );
 }

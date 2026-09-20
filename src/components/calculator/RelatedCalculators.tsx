@@ -1,14 +1,24 @@
 import Link from "next/link";
 import type { CalculatorMeta } from "@/types/calculator";
 
-export function RelatedCalculators({ calculators }: { calculators: CalculatorMeta[] }) {
+interface RelatedCalculatorsProps {
+  calculators: CalculatorMeta[];
+  title?: string;
+  headingId?: string;
+}
+
+export function RelatedCalculators({
+  calculators,
+  title = "Related calculators",
+  headingId = "related-heading",
+}: RelatedCalculatorsProps) {
   const live = calculators.filter((c) => c.isLive);
   if (live.length === 0) return null;
 
   return (
-    <section aria-labelledby="related-heading" className="border-t border-border pt-10">
-      <h2 id="related-heading" className="text-xl font-semibold text-foreground">
-        Related calculators
+    <section aria-labelledby={headingId} className="border-t border-border pt-10">
+      <h2 id={headingId} className="text-xl font-semibold text-foreground">
+        {title}
       </h2>
       <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
         {live.map((c) => (

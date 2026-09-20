@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { calculatorRegistry } from "@/lib/calculators/registry";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +17,7 @@ export function SearchBox({ size = "md", placeholder = "Search calculators…" }
   const [activeIndex, setActiveIndex] = useState(-1);
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const listId = useId();
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -29,6 +31,9 @@ export function SearchBox({ size = "md", placeholder = "Search calculators…" }
       )
       .slice(0, 6);
   }, [query]);
+
+  const hasQuery = query.trim().length > 0;
+  const optionId = (slug: string) => `${listId}-option-${slug}`;
 
   function goTo(slug: string) {
     setIsOpen(false);
@@ -75,9 +80,10 @@ export function SearchBox({ size = "md", placeholder = "Search calculators…" }
           id="site-search"
           type="search"
           role="combobox"
-          aria-expanded={isOpen && results.length > 0}
-          aria-controls="search-results"
+          aria-expanded={isOpen && hasQuery}
+          aria-controls={listId}
           aria-autocomplete="list"
+          aria-activedescendant={activeIndex >= 0 ? optionId(results[activeIndex].slug) : undefined}
           autoComplete="off"
           value={query}
           placeholder={placeholder}
@@ -96,27 +102,39 @@ export function SearchBox({ size = "md", placeholder = "Search calculators…" }
         />
       </div>
 
-      {isOpen && results.length > 0 && (
+      {isOpen && hasQuery && (
         <ul
-          id="search-results"
+          id={listId}
           role="listbox"
+          aria-label="Search results"
           className="absolute z-50 mt-2 w-full overflow-hidden rounded-xl border border-border bg-surface shadow-lg"
         >
-          {results.map((c, i) => (
-            <li key={c.slug} role="option" aria-selected={i === activeIndex}>
-              <button
-                type="button"
-                onMouseDown={() => goTo(c.slug)}
-                className={cn(
-                  "flex w-full flex-col items-start gap-0.5 px-4 py-2.5 text-left text-sm transition-colors",
-                  i === activeIndex ? "bg-accent-soft text-accent" : "text-foreground hover:bg-surface-muted"
-                )}
-              >
-                <span className="font-medium">{c.title}</span>
-                <span className="text-xs text-muted">{c.shortDescription}</span>
-              </button>
+          {results.length > 0 ? (
+            results.map((c, i) => (
+              <li key={c.slug} id={optionId(c.slug)} role="option" aria-selected={i === activeIndex}>
+                <button
+                  type="button"
+                  onMouseDown={() => goTo(c.slug)}
+                  className={cn(
+                    "flex w-full flex-col items-start gap-0.5 px-4 py-2.5 text-left text-sm transition-colors",
+                    i === activeIndex ? "bg-accent-soft text-accent" : "text-foreground hover:bg-surface-muted"
+                  )}
+                >
+                  <span className="font-medium">{c.title}</span>
+                  <span className={cn("text-xs", i === activeIndex ? "text-foreground/80" : "text-muted")}>
+                    {c.shortDescription}
+                  </span>
+                </button>
+              </li>
+            ))
+          ) : (
+            <li className="px-4 py-3 text-sm text-muted">
+              No calculators match &ldquo;{query.trim()}&rdquo;.{" "}
+              <Link href="/calculators" className="font-medium text-accent hover:text-accent-hover">
+                Browse all calculators
+              </Link>
             </li>
-          ))}
+          )}
         </ul>
       )}
     </div>

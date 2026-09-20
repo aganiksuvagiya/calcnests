@@ -6,14 +6,29 @@ interface FieldProps {
   hint?: string;
   error?: string;
   children: ReactNode;
+  /**
+   * True when `children` is a group of controls (e.g. a radio group) rather
+   * than a single labelable input. Renders the label text as a <span> with
+   * an id instead of a <label htmlFor>, since there's no single control for
+   * `for` to point to — pair it with `aria-labelledby` on the group.
+   */
+  asGroup?: boolean;
 }
 
-export function Field({ label, htmlFor, hint, error, children }: FieldProps) {
+export function Field({ label, htmlFor, hint, error, children, asGroup }: FieldProps) {
+  const labelClassName = "text-sm font-medium text-foreground";
+
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={htmlFor} className="text-sm font-medium text-foreground">
-        {label}
-      </label>
+      {asGroup ? (
+        <span id={htmlFor} className={labelClassName}>
+          {label}
+        </span>
+      ) : (
+        <label htmlFor={htmlFor} className={labelClassName}>
+          {label}
+        </label>
+      )}
       {children}
       {hint && !error && (
         <p className="text-xs text-muted">{hint}</p>

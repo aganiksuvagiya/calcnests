@@ -1,9 +1,16 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { SITE_NAME, SITE_TAGLINE, SITE_URL, SITE_DESCRIPTION, organizationJsonLd } from "@/lib/seo";
+import {
+  SITE_NAME,
+  SITE_TAGLINE,
+  SITE_URL,
+  SITE_DESCRIPTION,
+  organizationJsonLd,
+  websiteJsonLd,
+} from "@/lib/seo";
 import "./globals.css";
 
 const inter = Inter({
@@ -27,13 +34,22 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
   },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col bg-background text-foreground">
-        <JsonLd data={organizationJsonLd()} />
+        <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
