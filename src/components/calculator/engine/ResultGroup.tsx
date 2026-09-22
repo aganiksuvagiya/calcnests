@@ -13,9 +13,10 @@ interface ResultGroupProps {
   result: Record<string, number> | null;
   values?: Record<string, string>;
   copyable?: boolean;
+  formula?: string;
 }
 
-export function ResultGroup({ resultLabel, resultFields, result, values, copyable }: ResultGroupProps) {
+export function ResultGroup({ resultLabel, resultFields, result, values, copyable, formula }: ResultGroupProps) {
   const [copied, setCopied] = useState(false);
   const primary = resultFields.find((f) => f.primary) ?? resultFields[0];
   const supporting = resultFields.filter((f) => f !== primary);
@@ -25,7 +26,8 @@ export function ResultGroup({ resultLabel, resultFields, result, values, copyabl
   async function handleCopy() {
     if (!result || !primary) return;
     try {
-      await navigator.clipboard.writeText(`${resultLabel}: ${primaryValue}`);
+      const text = formula ? `${resultLabel}: ${primaryValue} (${formula})` : `${resultLabel}: ${primaryValue}`;
+      await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch {
@@ -35,7 +37,7 @@ export function ResultGroup({ resultLabel, resultFields, result, values, copyabl
 
   return (
     <div className="flex flex-col gap-4">
-      <ResultPanel label={resultLabel} value={primaryValue} />
+      <ResultPanel label={resultLabel} value={primaryValue} formula={result ? formula : undefined} />
 
       {result && supporting.length > 0 && (
         <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">

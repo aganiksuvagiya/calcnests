@@ -1,6 +1,7 @@
 import { Breadcrumbs } from "@/components/calculator/Breadcrumbs";
 import { ContactForm } from "@/components/contact/ContactForm";
-import { buildMetadata } from "@/lib/seo";
+import { ContactEmail } from "@/components/contact/ContactEmail";
+import { buildMetadata, SITE_EMAIL } from "@/lib/seo";
 
 export const metadata = buildMetadata({
   title: "Contact CalcNests",
@@ -19,6 +20,7 @@ export default function ContactPage() {
           Spotted an error, have a question about how a calculator works, or want to suggest one
           we should build? Send us a message below.
         </p>
+        <ContactEmail email={SITE_EMAIL} />
       </header>
 
       <div className="mt-8 rounded-2xl border border-border bg-surface p-6">

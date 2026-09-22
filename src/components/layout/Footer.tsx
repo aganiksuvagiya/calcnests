@@ -9,10 +9,7 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
           <div className="col-span-2 sm:col-span-1">
             <div className="flex items-center gap-2">
-              <Image src="/logo-icon.png" alt="" width={32} height={35} className="h-8 w-auto" />
-              <span className="text-lg font-bold text-foreground">
-                Calc<span className="text-accent">Nests</span>
-              </span>
+              <Image src="/logo-icon.png" alt="CalcNests" width={32} height={35} className="h-8 w-auto" />
             </div>
             <p className="mt-2 text-sm text-muted">
               Smart calculators & everyday tools for money, math, home, and life.

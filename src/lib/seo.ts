@@ -3,7 +3,8 @@ import type { FaqItem } from "@/types/calculator";
 
 export const SITE_NAME = "CalcNests";
 export const SITE_TAGLINE = "All Your Calculations, In One Place";
-export const SITE_URL = "https://calcnests.com";
+export const SITE_URL = "https://www.calcnests.com";
+export const SITE_EMAIL = "hello.calcnests@gmail.com";
 export const SITE_DESCRIPTION =
   "All your calculations, in one place — fast, accurate, free calculators for money, math, home, education, and everyday decisions, built for the US.";
 
@@ -89,6 +90,50 @@ export function calculatorJsonLd(calculator: { title: string; slug: string; desc
   };
 }
 
+function joinWithAnd(items: string[]): string {
+  if (items.length <= 1) return items.join("");
+  if (items.length === 2) return `${items[0]} and ${items[1]}`;
+  return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`;
+}
+
+export function howToJsonLd(calculator: {
+  title: string;
+  slug: string;
+  description: string;
+  /** Labels of the inputs on the calculator's default (first) mode, e.g. ["Percentage", "Of value"]. */
+  inputLabels: string[];
+  /** First line of the calculator's formula, e.g. "Tip = Bill × (Tip % ÷ 100)". */
+  formula: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: `How to use the ${calculator.title}`,
+    description: calculator.description,
+    step: [
+      {
+        "@type": "HowToStep",
+        name: "Enter your values",
+        text:
+          calculator.inputLabels.length > 0
+            ? `Enter ${joinWithAnd(calculator.inputLabels)} into the calculator.`
+            : "Enter your values into the calculator.",
+      },
+      {
+        "@type": "HowToStep",
+        name: "Calculation",
+        text: `The calculator applies the formula: ${calculator.formula}.`,
+      },
+      {
+        "@type": "HowToStep",
+        name: "Get your result",
+        text: "The result updates instantly, shown alongside the formula used so the calculation is transparent.",
+      },
+    ],
+    url: `${SITE_URL}/calculators/${calculator.slug}`,
+  };
+}
+
 export function organizationJsonLd() {
   return {
     "@context": "https://schema.org",
@@ -96,6 +141,7 @@ export function organizationJsonLd() {
     name: SITE_NAME,
     url: SITE_URL,
     description: SITE_DESCRIPTION,
+    email: SITE_EMAIL,
   };
 }
 
@@ -105,6 +151,14 @@ export function websiteJsonLd() {
     "@type": "WebSite",
     name: SITE_NAME,
     url: SITE_URL,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}/calculators?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
   };
 }
 

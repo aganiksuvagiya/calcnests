@@ -80,10 +80,27 @@ export function getLiveCalculators(): CalculatorMeta[] {
   return calculatorRegistry.filter((c) => c.isLive);
 }
 
-export function getRelatedCalculators(current: CalculatorMeta, limit = 5): CalculatorMeta[] {
+/**
+ * Explicit related-calculator picks for calculators where the plain
+ * "first N in the same category" order isn't the most useful set to show.
+ * Falls back to category order when a slug has no entry here.
+ */
+const RELATED_OVERRIDES: Record<string, string[]> = {
+  percentage: ["discount", "tip", "mortgage", "loan", "rent", "sales-tax"],
+};
+
+export function getRelatedCalculators(current: CalculatorMeta, limit?: number): CalculatorMeta[] {
+  const override = RELATED_OVERRIDES[current.slug];
+  if (override) {
+    return override
+      .map((s) => getCalculator(s))
+      .filter((c): c is CalculatorMeta => Boolean(c && c.isLive))
+      .slice(0, limit ?? override.length);
+  }
+
   return calculatorRegistry
     .filter((c) => c.category === current.category && c.slug !== current.slug)
-    .slice(0, limit);
+    .slice(0, limit ?? 5);
 }
 
 /**

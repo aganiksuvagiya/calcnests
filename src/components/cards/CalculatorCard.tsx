@@ -57,7 +57,10 @@ export function CalculatorCard({ calculator }: { calculator: CalculatorMeta }) {
   return (
     <Link
       href={`/calculators/${calculator.slug}`}
-      className="focus-ring group flex min-h-[10.5rem] flex-col rounded-2xl border border-border bg-surface p-5 shadow-xs transition-all hover:-translate-y-1 hover:border-accent/30 hover:shadow-lg sm:p-6"
+      className={cn(
+        "focus-ring group flex min-h-[10.5rem] flex-col rounded-2xl border border-border bg-surface p-5 shadow-sm transition-all hover:-translate-y-1 hover:border-accent/30 hover:shadow-xl sm:p-6",
+        color.glow
+      )}
     >
       {content}
     </Link>

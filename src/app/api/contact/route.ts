@@ -53,8 +53,9 @@ export async function POST(request: Request) {
 
   // TODO: deliver the message once an email/CRM provider is configured,
   // e.g.:
-  //   await resend.emails.send({ to: "...", subject: `Contact from ${name}`, text: message });
-  // Until then this only validates the submission.
+  //   await resend.emails.send({ to: SITE_EMAIL, subject: `Contact from ${name}`, text: message });
+  // Until then this only validates the submission. Intended destination
+  // inbox (SITE_EMAIL in src/lib/seo.ts): hello.calcnests@gmail.com.
 
   return NextResponse.json({ ok: true });
 }

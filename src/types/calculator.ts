@@ -118,6 +118,12 @@ export interface CalculatorVariant {
   resultFields: ResultFieldDef[];
   /** Optional dynamic label for the primary result, e.g. "20% of 150 is". */
   resultLabel?: (values: Record<string, string>, result: Record<string, number>) => string;
+  /**
+   * Optional plain-text worked calculation shown under the primary result,
+   * e.g. "20 ÷ 100 × 150 = 30" — makes the result feel transparent rather
+   * than a black box. Omit for calculators where this wouldn't add clarity.
+   */
+  resultFormula?: (values: Record<string, string>, result: Record<string, number>) => string;
 }
 
 export type StateTableCellFormat = "percent" | "currency" | "number" | "text";
@@ -148,6 +154,10 @@ export interface CalculatorConfig {
   icon: string;
   keywords: string[];
   shortDescription: string;
+  /** Overrides the <title> tag when it should differ from `title` (e.g. a longer SEO-optimized title). Falls back to `title`. */
+  metaTitle?: string;
+  /** Overrides the meta description when it should differ from `shortDescription`. Falls back to `shortDescription`. */
+  metaDescription?: string;
   /** "How it works" prose shown below the calculator. Paragraphs separated by "\n\n". */
   explanation: string;
   /** Plain-text formula shown in its own section, e.g. "Tip = Bill × (Tip % ÷ 100)". */

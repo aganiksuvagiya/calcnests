@@ -52,8 +52,8 @@ export async function generateMetadata({ params }: SlugPageProps): Promise<Metad
   const config = getCalculatorConfig(slug);
   if (config) {
     return buildMetadata({
-      title: config.title,
-      description: config.shortDescription,
+      title: config.metaTitle ?? config.title,
+      description: config.metaDescription ?? config.shortDescription,
       path: `/calculators/${config.slug}`,
       keywords: config.keywords,
     });

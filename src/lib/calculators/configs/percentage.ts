@@ -13,15 +13,24 @@ function requireNumber(label: string) {
   };
 }
 
+/** Trims a number to at most 4 decimal places and drops trailing zeros, for readable formula strings. */
+function fmt(n: number): string {
+  return Number(n.toFixed(4)).toString();
+}
+
 export const percentageConfig: CalculatorConfig = {
   slug: "percentage",
   title: "Percentage Calculator",
   category: "money",
   icon: "percent",
   keywords: ["percentage", "percent", "percentage increase", "percentage decrease"],
-  shortDescription: "Find percentages, increases, and decreases instantly.",
+  shortDescription:
+    "Calculate percentages, percentage increases, decreases, and percentage differences instantly.",
+  metaTitle: "Percentage Calculator - Calculate Percentages, Increase & Decrease",
+  metaDescription:
+    "Free percentage calculator to find percentages, percentage increase, decrease, and percentage change. Get instant results with clear formulas and examples.",
   explanation:
-    "This calculator covers the three most common percentage calculations: finding a percentage of a value, finding what percentage one number is of another, and finding the percentage change between two values.\n\nSwitch between the tabs above based on which calculation you need — each one updates its result instantly as you type.",
+    "This calculator handles the most common percentage calculations. Choose the calculation type above, enter your numbers, and get an instant result.\n\nPercentage of a number finds a percentage of a given value. What percentage is one number of another? finds the percentage relationship between two numbers. Percentage increase or decrease compares an original value with a new value.",
   formula:
     "X% of Y = (X ÷ 100) × Y\nX is what % of Y = (X ÷ Y) × 100\nPercentage change = ((New − Old) ÷ |Old|) × 100",
   example:
@@ -38,9 +47,23 @@ export const percentageConfig: CalculatorConfig = {
         "Divide the part by the whole and multiply by 100. For example, 45 out of 60 is (45 ÷ 60) × 100 = 75%.",
     },
     {
-      question: "How is percentage increase or decrease calculated?",
+      question: "How do I calculate percentage increase?",
       answer:
-        "Subtract the original value from the new value, divide by the original value, then multiply by 100. A positive result is an increase; a negative result is a decrease.",
+        "Subtract the original value from the new value, divide by the original value, then multiply by 100. For example, going from 80 to 100 is ((100 − 80) ÷ 80) × 100 = 25%.",
+    },
+    {
+      question: "How do I calculate percentage decrease?",
+      answer:
+        "Subtract the new value from the original value, divide by the original value, then multiply by 100. For example, going from 100 to 80 is ((100 − 80) ÷ 100) × 100 = 20% — a decrease.",
+    },
+    {
+      question: "Can I use the percentage calculator with decimals?",
+      answer:
+        "Yes. All three calculation modes accept decimal numbers, so you can work with values like 19.99 or 4.5% just as easily as whole numbers.",
+    },
+    {
+      question: "Is this percentage calculator free to use?",
+      answer: "Yes. It's completely free, with no sign-up, account, or download required.",
     },
   ],
   mode: "instant",
@@ -73,6 +96,8 @@ export const percentageConfig: CalculatorConfig = {
       },
       resultFields: [{ key: "result", label: "Result", format: "number", primary: true }],
       resultLabel: (values) => `${values.percent || 0}% of ${values.value || 0} is`,
+      resultFormula: (values, result) =>
+        `${fmt(toNumber(values.percent))} ÷ 100 × ${fmt(toNumber(values.value))} = ${fmt(result.result)}`,
     },
     {
       id: "what-percent",
@@ -80,20 +105,20 @@ export const percentageConfig: CalculatorConfig = {
       inputs: [
         {
           name: "part",
-          label: "Part",
+          label: "Value",
           type: "number",
           defaultValue: "45",
-          validate: requireNumber("part"),
+          validate: requireNumber("value"),
         },
         {
           name: "whole",
-          label: "Whole",
+          label: "Total",
           type: "number",
           defaultValue: "60",
           validate: (value) => {
-            const err = requireNumber("whole")(value);
+            const err = requireNumber("total")(value);
             if (err) return err;
-            if (toNumber(value) === 0) return "Whole value can't be zero.";
+            if (toNumber(value) === 0) return "Total can't be zero.";
             return null;
           },
         },
@@ -104,6 +129,8 @@ export const percentageConfig: CalculatorConfig = {
       },
       resultFields: [{ key: "result", label: "Result", format: "percent", primary: true }],
       resultLabel: (values) => `${values.part || 0} is what percent of ${values.whole || 0}`,
+      resultFormula: (values, result) =>
+        `${fmt(toNumber(values.part))} ÷ ${fmt(toNumber(values.whole))} × 100 = ${fmt(result.result)}%`,
     },
     {
       id: "change",
@@ -111,22 +138,22 @@ export const percentageConfig: CalculatorConfig = {
       inputs: [
         {
           name: "from",
-          label: "From",
+          label: "Original value",
           type: "number",
           defaultValue: "80",
           validate: (value) => {
-            const err = requireNumber("starting value")(value);
+            const err = requireNumber("original value")(value);
             if (err) return err;
-            if (toNumber(value) === 0) return "Starting value can't be zero.";
+            if (toNumber(value) === 0) return "Original value can't be zero.";
             return null;
           },
         },
         {
           name: "to",
-          label: "To",
+          label: "New value",
           type: "number",
           defaultValue: "100",
-          validate: requireNumber("ending value"),
+          validate: requireNumber("new value"),
         },
       ],
       compute: (values) => {
@@ -136,6 +163,12 @@ export const percentageConfig: CalculatorConfig = {
       resultFields: [{ key: "result", label: "Change", format: "percent", primary: true, signed: true }],
       resultLabel: (_values, result) =>
         result.result > 0 ? "Percentage increase" : result.result < 0 ? "Percentage decrease" : "Percentage change",
+      resultFormula: (values, result) => {
+        const from = toNumber(values.from);
+        const to = toNumber(values.to);
+        const signed = result.result > 0 ? `+${fmt(result.result)}` : fmt(result.result);
+        return `((${fmt(to)} − ${fmt(from)}) ÷ ${fmt(Math.abs(from))}) × 100 = ${signed}%`;
+      },
     },
   ],
 };

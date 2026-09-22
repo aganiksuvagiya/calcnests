@@ -74,6 +74,7 @@ export function GenericCalculatorFormInner({ config }: { config: CalculatorConfi
   }, [variant, committedValues, hasFieldErrors]);
 
   const resultLabel = variant.resultLabel?.(committedValues, result ?? {}) ?? config.title;
+  const resultFormula = result ? variant.resultFormula?.(committedValues, result) : undefined;
 
   return (
     <div className="rounded-2xl border border-border bg-surface p-5 sm:p-6">
@@ -188,6 +189,7 @@ export function GenericCalculatorFormInner({ config }: { config: CalculatorConfi
           result={result}
           values={committedValues}
           copyable={config.copyable}
+          formula={resultFormula}
         />
       </div>
     </div>

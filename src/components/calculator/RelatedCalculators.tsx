@@ -1,5 +1,5 @@
-import Link from "next/link";
 import type { CalculatorMeta } from "@/types/calculator";
+import { CalculatorCard } from "@/components/cards/CalculatorCard";
 
 interface RelatedCalculatorsProps {
   calculators: CalculatorMeta[];
@@ -20,18 +20,11 @@ export function RelatedCalculators({
       <h2 id={headingId} className="text-xl font-semibold text-foreground">
         {title}
       </h2>
-      <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {live.map((c) => (
-          <li key={c.slug}>
-            <Link
-              href={`/calculators/${c.slug}`}
-              className="focus-ring block rounded-xl border border-border bg-surface p-4 text-sm font-medium text-foreground transition-colors hover:border-accent/30 hover:text-accent"
-            >
-              {c.title}
-            </Link>
-          </li>
+          <CalculatorCard key={c.slug} calculator={c} />
         ))}
-      </ul>
+      </div>
     </section>
   );
 }

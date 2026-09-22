@@ -12,7 +12,10 @@ export function CategoryCard({ category }: { category: Category }) {
   return (
     <Link
       href={`/calculators/${category.slug}`}
-      className="focus-ring group flex flex-col gap-3 rounded-2xl border border-border bg-surface p-6 shadow-xs transition-all hover:-translate-y-1 hover:border-accent/30 hover:shadow-lg"
+      className={cn(
+        "focus-ring group flex flex-col gap-3 rounded-2xl border border-border bg-surface p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-accent/30 hover:shadow-xl",
+        color.glow
+      )}
     >
       <div className="flex items-start justify-between">
         <div
