@@ -3,7 +3,7 @@ import type { FaqItem } from "@/types/calculator";
 
 export const SITE_NAME = "CalcNests";
 export const SITE_TAGLINE = "All Your Calculations, In One Place";
-export const SITE_URL = "https://www.calcnests.com";
+export const SITE_URL = "https://calcnests.com";
 export const SITE_EMAIL = "hello.calcnests@gmail.com";
 export const SITE_DESCRIPTION =
   "All your calculations, in one place — fast, accurate, free calculators for money, math, home, education, and everyday decisions, built for the US.";
